@@ -5,6 +5,8 @@ test.describe("E2E (credentials)", () => {
 
   test("login and create workspace", async ({ page }) => {
     await page.goto("/login");
+    // If E2E_TEST is not visible to the Next dev server, this fails fast with a clear signal.
+    await expect(page.getByText("E2E mode enabled (CI only)")).toBeVisible({ timeout: 120_000 });
     await page.getByPlaceholder("e2e@test.com").fill("e2e@test.com");
     await page.getByPlaceholder("E2E password from env").fill(process.env.E2E_PASSWORD!);
     await page.getByRole("button", { name: "Sign in (E2E credentials)" }).click();
