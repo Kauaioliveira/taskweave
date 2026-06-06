@@ -14,11 +14,14 @@ function ciWebServerEnv(): Record<string, string> {
   }
   // Ensure `next dev` runs in development mode even if the parent process exports NODE_ENV=production.
   env.NODE_ENV = "development";
+  // Auth.js: keep callback URLs aligned with Playwright's baseURL in CI.
+  env.AUTH_URL ??= "http://127.0.0.1:3000";
   return env;
 }
 
 export default defineConfig({
   testDir: "./e2e",
+  timeout: 120_000,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
@@ -27,6 +30,8 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:3000",
     trace: "on-first-retry",
+    navigationTimeout: 90_000,
+    actionTimeout: 30_000,
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {

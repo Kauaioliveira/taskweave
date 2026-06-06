@@ -27,6 +27,8 @@ jobs:
     env:
       DATABASE_URL: postgresql://postgres:postgres@localhost:5432/taskweave
       AUTH_SECRET: ci-auth-secret-must-be-long-enough-for-authjs-32chars
+      # Match Playwright baseURL (127.0.0.1) to avoid CSRF / callback URL mismatches in Auth.js.
+      AUTH_URL: http://127.0.0.1:3000
       AUTH_GITHUB_ID: dummy-client-id
       AUTH_GITHUB_SECRET: dummy-client-secret
       E2E_TEST: "1"

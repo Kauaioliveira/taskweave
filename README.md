@@ -2,7 +2,9 @@
 
 TaskWeave is a **portfolio-grade full-stack** example: multi-workspace **Kanban boards**, **role-based access control** (Owner / Member / Viewer), and **email-scoped invite links**. It is intentionally small enough to read in an afternoon, but structured like a real product (auth boundaries, server actions, Prisma schema, CI, and Dockerized Postgres).
 
-**Live demo:** add your deployed URL here after you ship to Vercel + a hosted Postgres (Neon/Supabase/Railway).
+[![CI](https://github.com/Kauaioliveira/taskweave/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Kauaioliveira/taskweave/actions/workflows/ci.yml?query=branch%3Amain)
+
+**Live demo:** not published yet — run locally with [Quick start](#quick-start). When you deploy (e.g. Vercel + managed Postgres), replace this line with your public URL.
 
 ## Architecture
 
