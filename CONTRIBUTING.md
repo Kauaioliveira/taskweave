@@ -70,10 +70,6 @@ npm run db:seed
 npm run test:e2e
 ```
 
-## Private notes folder
-
-The `private/` directory is gitignored by design. Put personal interview prep there.
-
 Do **not** commit secrets (`.env`, OAuth secrets, production database URLs).
 
 ## CI

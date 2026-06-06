@@ -83,13 +83,9 @@ For local development, set the callback URL in your GitHub OAuth app to:
 3. Set the GitHub OAuth callback to your production domain: `https://YOUR_DOMAIN/api/auth/callback/github`.
 4. After the first deploy, run `npx prisma db push` (or a migration workflow) against production **once** from a trusted environment, or run migrations in CI/CD the way your team prefers.
 
-## Personal interview notes (not in git)
-
-This repository intentionally ignores the `private/` folder. Keep recruiter prep docs there so they never get committed.
-
 ## Português (curto)
 
-Este repositório é um **projeto de portfólio** focado em mostrar **autenticação**, **autorização por workspace**, **Prisma/Postgres**, **Docker**, **testes** e **CI**. Documentação pessoal para entrevistas fica na pasta `private/` (fora do Git via `.gitignore`).
+Este repositório é um **projeto de portfólio** focado em mostrar **autenticação**, **autorização por workspace**, **Prisma/Postgres**, **Docker**, **testes** e **CI**.
 
 ## License
 

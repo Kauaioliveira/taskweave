@@ -11,7 +11,6 @@ This document summarizes **project hygiene** and known **risk tradeoffs**. It is
 
 - **Never commit** `.env`, `.env.local`, or real OAuth secrets.
 - `.env.example` documents required variables without real values.
-- The `private/` folder is **gitignored** intentionally for personal interview notes.
 
 ## GitHub Actions / CI
 
