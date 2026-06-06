@@ -1,10 +1,11 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
+import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GitHub from "next-auth/providers/github";
 import { prisma } from "@/lib/prisma";
 
-const providers = [
+const providers: NextAuthConfig["providers"] = [
   GitHub({
     allowDangerousEmailAccountLinking: true,
   }),
