@@ -79,6 +79,8 @@ npm run db:seed
 npm run test:e2e
 ```
 
+**Kanban DnD:** we do **not** run a Playwright drag simulation for `@dnd-kit` in CI. Pointer + keyboard DnD is sensitive to layout timing and tends to be flaky in headless runs; regressions are caught manually and via the board server actions. `GET /api/health` is covered with a fast `request` test.
+
 Do **not** commit secrets (`.env`, OAuth secrets, production database URLs).
 
 ## CI

@@ -4,12 +4,13 @@ These items were suggested in the original portfolio plan. The core demo is **RB
 
 ## Done in-repo (reference for interviews)
 
-- **Versioned Prisma migrations** — `prisma/migrations/` + `migrate deploy` in CI; see README / CONTRIBUTING.
-- **Extra E2E** — viewer read-only, invite wrong-email, invite accept happy path, owner vs viewer UI (`e2e/*.spec.ts`).
+- **Vitest utilities** — `getPublicOrigin`, `escapeHtml`, and Resend skip path (`lib/*.test.ts`).
+- **Extra E2E** — viewer read-only, invite wrong-email, invite accept happy path, owner vs viewer UI (`e2e/*.spec.ts`), plus **`GET /api/health`** via Playwright `request`.
 - **Sentry (optional)** — `@sentry/nextjs` with `instrumentation.ts` / `instrumentation-client.ts`; SDK only initialises when `SENTRY_DSN` and/or `NEXT_PUBLIC_SENTRY_DSN` are set (no noise in local dev without them).
 - **Resend invite email (optional)** — `RESEND_API_KEY` + `RESEND_FROM`; creating an invite still succeeds if email is skipped or fails (copy link remains the fallback).
 - **Kanban drag-and-drop (editors)** — `@dnd-kit/core` cross-list moves on the board page; viewers still see read-only columns. Includes **keyboard** (`KeyboardSensor` + `sortableKeyboardCoordinates`) and a visible **move error** banner with dismiss.
 - **Public API / OpenAPI stub** — `GET /api/health` plus [`docs/openapi.yaml`](openapi.yaml) and [docs/openapi.md](openapi.md) explaining scope.
+- **Baseline security headers** — `X-Frame-Options`, `Referrer-Policy`, and `X-Content-Type-Options` via [next.config.ts](../next.config.ts).
 
 ## Optional next steps (pick any; no priority order)
 
