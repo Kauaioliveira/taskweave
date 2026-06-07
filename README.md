@@ -4,7 +4,7 @@ TaskWeave is a **portfolio-grade full-stack** example: multi-workspace **Kanban 
 
 [![CI](https://github.com/Kauaioliveira/taskweave/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Kauaioliveira/taskweave/actions/workflows/ci.yml?query=branch%3Amain)
 
-**Live demo:** not published yet — run locally with [Quick start](#quick-start). When you deploy (e.g. Vercel + managed Postgres), replace this line with your public URL.
+**Live demo:** there is no shared hosted instance in this repo. Publish your own in a few minutes with **[docs/deploy-vercel.md](docs/deploy-vercel.md)** (Vercel + managed Postgres), then replace this sentence with your public `https://…` URL for recruiters.
 
 ## Architecture
 
@@ -26,11 +26,11 @@ flowchart LR
 
 - **Next.js (App Router) + TypeScript**
 - **Auth.js (NextAuth v5)** with **GitHub OAuth**, **JWT sessions** (Edge-friendly middleware), and **Prisma** for user/account persistence
-- **Prisma** + **PostgreSQL**
+- **Prisma** + **PostgreSQL** (versioned migrations; `db push` still documented for quick local experiments)
 - **Docker Compose** for local Postgres
 - **Vitest** for a small RBAC unit test suite
-- **Playwright** for a CI-only E2E smoke path (credentials provider gated by `E2E_TEST=1`)
-- **GitHub Actions** CI (lint, typecheck, unit tests, build, E2E)
+- **Playwright** for a CI-only E2E path (credentials provider gated by `E2E_TEST=1`)
+- **GitHub Actions** CI (lint, typecheck, unit tests, build, `prisma migrate deploy`, seed, E2E)
 
 ## Quick start
 
@@ -47,15 +47,17 @@ docker compose up -d
 cp .env.example .env
 ```
 
-Fill in `DATABASE_URL` (defaults match `docker-compose.yml`), `AUTH_SECRET`, and GitHub OAuth keys (`AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`).
+Fill in `DATABASE_URL` (defaults match `docker-compose.yml`), `AUTH_SECRET`, and GitHub OAuth keys (`AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`). For production or OAuth redirects behind a public URL, set **`AUTH_URL`** (see `.env.example`).
 
-4. Push schema and run the dev server:
+4. Apply schema and run the dev server:
 
 ```bash
 npm install
-npx prisma db push
+npx prisma migrate deploy
 npm run dev
 ```
+
+For a throwaway local DB without migration history, you can use `npx prisma db push` instead of `migrate deploy` (not recommended for production).
 
 Open `http://localhost:3000`.
 
@@ -64,6 +66,8 @@ Open `http://localhost:3000`.
 For local development, set the callback URL in your GitHub OAuth app to:
 
 `http://localhost:3000/api/auth/callback/github`
+
+In production, add your public origin as well (see [docs/deploy-vercel.md](docs/deploy-vercel.md)).
 
 ## Scripts
 
@@ -74,16 +78,14 @@ For local development, set the callback URL in your GitHub OAuth app to:
 | `npm run lint` | ESLint |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run test` | Vitest |
-| `npm run test:e2e` | Playwright (expects `E2E_TEST=1` + seeded user) |
-| `npm run db:push` | Sync Prisma schema to the database (great for local dev) |
-| `npm run db:seed` | Seed the E2E user when `E2E_TEST=1` |
+| `npm run test:e2e` | Playwright (expects `E2E_TEST=1` + seed) |
+| `npm run db:push` | Sync Prisma schema without migrations (local convenience) |
+| `npm run db:migrate:deploy` | Apply versioned SQL migrations (`prisma migrate deploy`) |
+| `npm run db:seed` | Seed E2E users/workspace when `E2E_TEST=1` |
 
 ## Deploy notes (Vercel + managed Postgres)
 
-1. Create a Postgres database (Neon/Supabase/Railway) and set `DATABASE_URL` in Vercel.
-2. Set `AUTH_SECRET`, `AUTH_GITHUB_ID`, `AUTH_GITHUB_SECRET`, and `AUTH_TRUST_HOST=true`.
-3. Set the GitHub OAuth callback to your production domain: `https://YOUR_DOMAIN/api/auth/callback/github`.
-4. After the first deploy, run `npx prisma db push` (or a migration workflow) against production **once** from a trusted environment, or run migrations in CI/CD the way your team prefers.
+See **[docs/deploy-vercel.md](docs/deploy-vercel.md)** for a full checklist (`DATABASE_URL`, `AUTH_SECRET`, `AUTH_URL`, `AUTH_TRUST_HOST`, GitHub OAuth callback, `prisma migrate deploy`, and smoke testing). **Do not** enable `E2E_TEST` in production.
 
 ## Português (curto)
 
