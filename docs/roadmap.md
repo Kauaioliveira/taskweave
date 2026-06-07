@@ -8,11 +8,12 @@ These items were suggested in the original portfolio plan. The core demo is **RB
 - **Extra E2E** — viewer read-only, invite wrong-email, invite accept happy path, owner vs viewer UI (`e2e/*.spec.ts`).
 - **Sentry (optional)** — `@sentry/nextjs` with `instrumentation.ts` / `instrumentation-client.ts`; SDK only initialises when `SENTRY_DSN` and/or `NEXT_PUBLIC_SENTRY_DSN` are set (no noise in local dev without them).
 - **Resend invite email (optional)** — `RESEND_API_KEY` + `RESEND_FROM`; creating an invite still succeeds if email is skipped or fails (copy link remains the fallback).
-- **Kanban drag-and-drop (editors)** — `@dnd-kit/core` cross-list moves on the board page; viewers still see read-only columns.
+- **Kanban drag-and-drop (editors)** — `@dnd-kit/core` cross-list moves on the board page; viewers still see read-only columns. Includes **keyboard** (`KeyboardSensor` + `sortableKeyboardCoordinates`) and a visible **move error** banner with dismiss.
 - **Public API / OpenAPI stub** — `GET /api/health` plus [`docs/openapi.yaml`](openapi.yaml) and [docs/openapi.md](openapi.md) explaining scope.
 
 ## Optional next steps (pick any; no priority order)
 
 - **More documented HTTP routes:** extend `docs/openapi.yaml` when you add real public REST beyond Auth.js and health.
+- **Intra-column card reorder:** changing `order` within the same list (DnD) needs a Prisma transaction and careful E2E — not shipped yet; cross-column drag already covers the main Kanban story.
 
 Update this file as you implement items (or delete sections you decide not to pursue).

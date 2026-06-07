@@ -3,6 +3,7 @@
 import {
   DndContext,
   type DragEndEvent,
+  KeyboardSensor,
   PointerSensor,
   pointerWithin,
   useDraggable,
@@ -10,9 +11,10 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useId, useState, useTransition } from "react";
 import { createCard, moveCardToList } from "@/app/actions/board";
 
 export type BoardDndList = {
@@ -90,7 +92,7 @@ function DraggableCard({
           {...listeners}
           {...attributes}
         >
-          Drag to move
+          Drag: mouse or Space / arrows / Space
         </div>
       ) : null}
       {children}
@@ -101,11 +103,21 @@ function DraggableCard({
 export function BoardDnd({ lists }: { lists: BoardDndList[] }) {
   const router = useRouter();
   const [, startTransition] = useTransition();
+  const liveId = useId();
+  const [dndError, setDndError] = useState<string | null>(null);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 6 },
     }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
+
+  function handleDragStart() {
+    setDndError(null);
+  }
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
@@ -123,13 +135,41 @@ export function BoardDnd({ lists }: { lists: BoardDndList[] }) {
           router.refresh();
         } catch (e) {
           console.error("[board] moveCardToList failed:", e);
+          const msg = e instanceof Error ? e.message : "Could not move card. Try again.";
+          setDndError(msg);
         }
       })();
     });
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={pointerWithin} onDragEnd={handleDragEnd}>
+    <DndContext
+      sensors={sensors}
+      collisionDetection={pointerWithin}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+    >
+      {dndError ? (
+        <div
+          className="mb-4 rounded-md border border-rose-900/60 bg-rose-950/40 px-3 py-2 text-sm text-rose-100"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          id={liveId}
+        >
+          <p className="font-medium">Move failed</p>
+          <p className="mt-1 text-xs text-rose-200/90">{dndError}</p>
+          <button
+            type="button"
+            className="mt-2 text-xs font-semibold text-sky-300 underline hover:text-sky-200"
+            onClick={() => setDndError(null)}
+          >
+            Dismiss
+          </button>
+        </div>
+      ) : (
+        <div id={liveId} className="sr-only" aria-live="polite" />
+      )}
       <div className="flex gap-4 overflow-x-auto pb-4">
         {lists.map((list) => (
           <DroppableColumn key={list.id} list={list}>
