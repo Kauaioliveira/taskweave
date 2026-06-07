@@ -2,6 +2,22 @@
 
 This guide targets a **public demo** on Vercel with a **managed Postgres** (Neon, Supabase, or Railway). Adjust names if your provider differs.
 
+## 0) Recommended order (checklist)
+
+Do these in order the first time; later deploys are mostly “push to `main`”.
+
+1. Create **managed Postgres** and copy `DATABASE_URL` (see §1).
+2. **Import the repo** in Vercel and set **environment variables** (see §3) before or right after the first build.
+3. **First production deploy** (Vercel build completes).
+4. From a **trusted machine** with production `DATABASE_URL` in the environment, run **`npx prisma migrate deploy`** (see §5).
+5. In the **GitHub OAuth App**, add the production **callback URL** (see §4).
+6. **Smoke test:** open the site → **Sign in with GitHub** → create a workspace → create a board (see §6).
+7. **README + GitHub About:** put the public `https://…` URL in the README “Live demo” line and, if you like, set the repo homepage:
+
+   ```bash
+   gh repo edit OWNER/REPO --homepage "https://your-production-host"
+   ```
+
 ## 1) Create Postgres and get `DATABASE_URL`
 
 - **Neon:** create a project → copy the pooled connection string (includes `sslmode=require` if offered).
