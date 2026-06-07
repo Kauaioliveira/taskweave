@@ -6,6 +6,8 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { minimumRoleForInvite } from "@/lib/rbac";
 import { requireMembership } from "@/lib/workspace-access";
+import { sendWorkspaceInviteEmail } from "@/lib/email";
+import { getPublicOrigin } from "@/lib/public-origin";
 
 export async function createWorkspaceInvite(formData: FormData) {
   const session = await auth();
@@ -32,6 +34,23 @@ export async function createWorkspaceInvite(formData: FormData) {
       createdById: session.user.id,
     },
   });
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { name: true },
+  });
+
+  const origin = getPublicOrigin();
+  if (origin) {
+    const inviteUrl = `${origin}/invite/${token}`;
+    await sendWorkspaceInviteEmail({
+      to: email,
+      inviteUrl,
+      workspaceName: workspace?.name ?? "Workspace",
+    });
+  } else if (process.env.NODE_ENV === "development") {
+    console.info("[email] Skipped invite email: no AUTH_URL / VERCEL_URL / NEXT_PUBLIC_APP_URL for absolute invite URL");
+  }
 
   revalidatePath(`/workspaces/${workspaceId}`);
 }
