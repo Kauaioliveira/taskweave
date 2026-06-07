@@ -15,7 +15,7 @@ function ciWebServerEnv(): Record<string, string> {
   // Ensure `next dev` runs in development mode even if the parent process exports NODE_ENV=production.
   env.NODE_ENV = "development";
   // Auth.js: keep callback URLs aligned with Playwright's baseURL in CI.
-  env.AUTH_URL ??= "http://127.0.0.1:3000";
+  env.AUTH_URL ??= "http://localhost:3000";
   return env;
 }
 
@@ -28,7 +28,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "list",
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: "http://localhost:3000",
     trace: "on-first-retry",
     navigationTimeout: 90_000,
     actionTimeout: 30_000,
@@ -37,7 +37,7 @@ export default defineConfig({
   webServer: {
     // CI: stable dev server + explicit env. Local: turbopack dev (inherits env).
     command: process.env.CI ? "npm run dev:ci" : "npm run dev",
-    url: "http://127.0.0.1:3000",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: process.env.CI ? 180_000 : 120_000,
     ...(process.env.CI ? { env: ciWebServerEnv() } : {}),

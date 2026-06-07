@@ -46,7 +46,7 @@ export default async function HomePage() {
         <h2 className="text-lg font-semibold text-white">What recruiters can verify here</h2>
         <ul className="list-disc space-y-2 pl-5 text-slate-300">
           <li>App Router structure, server actions, and typed data access with Prisma</li>
-          <li>OAuth (GitHub) with database sessions via Auth.js</li>
+          <li>OAuth (GitHub) with JWT sessions via Auth.js (Edge-safe middleware)</li>
           <li>Multi-tenant workspaces with memberships and RBAC checks in mutations</li>
           <li>Docker Compose for local PostgreSQL and CI-friendly workflows</li>
         </ul>

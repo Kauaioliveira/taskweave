@@ -11,8 +11,8 @@ Authorization is enforced in **server actions** by calling `requireMembership(..
 Auth.js is configured in the root `auth.ts` file:
 
 - **GitHub OAuth** for normal usage
-- **Database sessions** (`session: { strategy: "database" }`) so sessions are revocable and tied to Prisma models
-- **`@auth/prisma-adapter`** to persist `User`, `Account`, and `Session` rows
+- **JWT sessions** (`session: { strategy: "jwt" }`) so `middleware.ts` can run on the Edge runtime without bundling Prisma. Users/accounts are still stored in Postgres via the Prisma adapter on Node routes.
+- **`@auth/prisma-adapter`** to persist `User` and `Account` rows (OAuth linking) in Postgres
 
 ## Authorization (RBAC)
 

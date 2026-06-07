@@ -25,7 +25,7 @@ flowchart LR
 ## Tech stack
 
 - **Next.js (App Router) + TypeScript**
-- **Auth.js (NextAuth v5)** with **GitHub OAuth** and database-backed sessions
+- **Auth.js (NextAuth v5)** with **GitHub OAuth**, **JWT sessions** (Edge-friendly middleware), and **Prisma** for user/account persistence
 - **Prisma** + **PostgreSQL**
 - **Docker Compose** for local Postgres
 - **Vitest** for a small RBAC unit test suite
