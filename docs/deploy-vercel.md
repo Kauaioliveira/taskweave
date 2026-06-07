@@ -45,8 +45,17 @@ Set for **Production** (and Preview if you want previews to work end-to-end):
 | `AUTH_TRUST_HOST` | `true` (Vercel sits behind a proxy) |
 | `AUTH_URL` | `https://<your-production-domain>` (your Vercel URL or custom domain) |
 | `NEXT_PUBLIC_APP_URL` | Optional; same public URL if you add client-side links later |
+| `SENTRY_DSN` | Optional; server/edge error reporting ([Sentry](https://sentry.io)) |
+| `NEXT_PUBLIC_SENTRY_DSN` | Optional; browser errors (same project DSN, “browser” key in Sentry) |
+| `SENTRY_TRACES_SAMPLE_RATE` | Optional; `0`–`1`, default `0.1` in code — use `0.05` or lower on small demos |
+| `RESEND_API_KEY` | Optional; sends invite email when creating a workspace invite |
+| `RESEND_FROM` | Optional; verified sender, e.g. `TaskWeave <onboarding@resend.dev>` |
 
 **Do not** set `E2E_TEST` or `E2E_PASSWORD` in production.
+
+**Sentry notes:** keep trace sampling low; this codebase sets `sendDefaultPii: false` and does not attach user emails to events by default.
+
+**Resend notes:** if `RESEND_API_KEY` or `RESEND_FROM` is missing, the app still creates invites and you can share `/invite/<token>` manually (MVP behaviour).
 
 ## 4) GitHub OAuth callback
 

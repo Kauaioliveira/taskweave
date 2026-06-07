@@ -6,13 +6,11 @@ These items were suggested in the original portfolio plan. The core demo is **RB
 
 - **Versioned Prisma migrations** — `prisma/migrations/` + `migrate deploy` in CI; see README / CONTRIBUTING.
 - **Extra E2E** — viewer read-only, invite wrong-email, invite accept happy path, owner vs viewer UI (`e2e/*.spec.ts`).
-- **Deploy documentation** — [deploy-vercel.md](deploy-vercel.md) for a public demo URL.
+- **Sentry (optional)** — `@sentry/nextjs` with `instrumentation.ts` / `instrumentation-client.ts`; SDK only initialises when `SENTRY_DSN` and/or `NEXT_PUBLIC_SENTRY_DSN` are set (no noise in local dev without them).
 
 ## Optional next steps (pick any; no priority order)
 
-- **Observability:** Sentry (or similar) for server/client errors in production-like environments.
 - **API documentation:** OpenAPI / typed route docs if you expose more HTTP endpoints beyond Auth.js.
-- **Invites by email:** transactional email (Resend, SES, etc.) instead of copy-paste invite links only.
 - **Kanban UX:** drag-and-drop (e.g. `@dnd-kit`) instead of move-via-select MVP.
 
 Update this file as you implement items (or delete sections you decide not to pursue).
