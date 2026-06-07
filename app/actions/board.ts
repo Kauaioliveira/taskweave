@@ -70,26 +70,23 @@ export async function createCard(formData: FormData) {
   revalidatePath(`/workspaces/${list.board.workspaceId}/boards/${list.boardId}`);
 }
 
-export async function moveCard(formData: FormData) {
-  const session = await auth();
-  if (!session?.user?.id) throw new Error("Unauthorized");
-
-  const cardId = String(formData.get("cardId") ?? "");
-  const toListId = String(formData.get("toListId") ?? "");
-  if (!cardId || !toListId) return;
-
+async function moveCardToListForUser(cardId: string, toListId: string, userId: string) {
   const card = await prisma.card.findUnique({
     where: { id: cardId },
     include: { list: { include: { board: true } } },
   });
   if (!card) throw new Error("Not found");
 
-  await requireBoardAccess(card.list.boardId, session.user.id);
+  await requireBoardAccess(card.list.boardId, userId);
 
   const targetList = await prisma.list.findFirst({
     where: { id: toListId, boardId: card.list.boardId },
   });
   if (!targetList) throw new Error("Invalid list");
+
+  if (card.listId === toListId) {
+    return;
+  }
 
   const last = await prisma.card.findFirst({
     where: { listId: toListId },
@@ -104,4 +101,22 @@ export async function moveCard(formData: FormData) {
   });
 
   revalidatePath(`/workspaces/${card.list.board.workspaceId}/boards/${card.list.boardId}`);
+}
+
+export async function moveCard(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const cardId = String(formData.get("cardId") ?? "");
+  const toListId = String(formData.get("toListId") ?? "");
+  if (!cardId || !toListId) return;
+
+  await moveCardToListForUser(cardId, toListId, session.user.id);
+}
+
+/** Used by the Kanban DnD client; same rules as `moveCard` form action. */
+export async function moveCardToList(cardId: string, toListId: string) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+  await moveCardToListForUser(cardId, toListId, session.user.id);
 }
