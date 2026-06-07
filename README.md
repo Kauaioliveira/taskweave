@@ -31,6 +31,9 @@ flowchart LR
 - **Vitest** for a small RBAC unit test suite
 - **Playwright** for a CI-only E2E path (credentials provider gated by `E2E_TEST=1`)
 - **GitHub Actions** CI (lint, typecheck, unit tests, build, `prisma migrate deploy`, seed, E2E)
+- **@dnd-kit/core** for cross-list card moves on boards (editors only)
+- **Optional observability / email:** Sentry (`SENTRY_DSN` / `NEXT_PUBLIC_SENTRY_DSN`), Resend invite mail (`RESEND_*`) — see [docs/deploy-vercel.md](docs/deploy-vercel.md)
+- **Minimal HTTP contract:** [`GET /api/health`](app/api/health/route.ts) and [docs/openapi.yaml](docs/openapi.yaml) — background in [docs/openapi.md](docs/openapi.md)
 
 ## Quick start
 

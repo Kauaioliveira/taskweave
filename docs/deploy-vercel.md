@@ -12,7 +12,8 @@ Do these in order the first time; later deploys are mostly “push to `main`”.
 4. From a **trusted machine** with production `DATABASE_URL` in the environment, run **`npx prisma migrate deploy`** (see §5).
 5. In the **GitHub OAuth App**, add the production **callback URL** (see §4).
 6. **Smoke test:** open the site → **Sign in with GitHub** → create a workspace → create a board (see §6).
-7. **README + GitHub About:** put the public `https://…` URL in the README “Live demo” line and, if you like, set the repo homepage:
+7. Optional: confirm **`GET /api/health`** returns `{"ok":true}` for monitors (see [docs/openapi.md](openapi.md)).
+8. **README + GitHub About:** put the public `https://…` URL in the README “Live demo” line and, if you like, set the repo homepage:
 
    ```bash
    gh repo edit OWNER/REPO --homepage "https://your-production-host"
@@ -84,6 +85,10 @@ This repo ships SQL migrations under `prisma/migrations/`. Use a trusted machine
 ## 7) Update the README demo link
 
 Replace the **Live demo** line in `README.md` with your public URL so recruiters can click through immediately.
+
+## 8) OpenAPI / health (optional)
+
+The app exposes **`GET /api/health`** for uptime checks. A minimal OpenAPI description lives in [`docs/openapi.yaml`](openapi.yaml) (see [docs/openapi.md](openapi.md) for when to grow this beyond the stub).
 
 ## Troubleshooting
 

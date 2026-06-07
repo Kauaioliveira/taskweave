@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: TaskWeave public API (minimal)
+  version: "0.0.0"
+  description: >
+    Hand-maintained stub. The app is mostly Server Actions + Auth.js; only
+    explicit HTTP routes intended for operators are listed here.
+paths:
+  /api/health:
+    get:
+      summary: Liveness probe
+      operationId: getHealth
+      responses:
+        "200":
+          description: Service is running
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ok, service]
+                properties:
+                  ok:
+                    type: boolean
+                    example: true
+                  service:
+                    type: string
+                    example: taskweave
