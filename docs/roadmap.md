@@ -5,7 +5,7 @@ These items were suggested in the original portfolio plan. The core demo is **RB
 ## Done in-repo (reference for interviews)
 
 - **Versioned Prisma migrations** — `prisma/migrations/` + `migrate deploy` in CI; see README / CONTRIBUTING.
-- **Extra E2E** — viewer read-only, invite wrong-email, owner vs viewer UI (`e2e/*.spec.ts`).
+- **Extra E2E** — viewer read-only, invite wrong-email, invite accept happy path, owner vs viewer UI (`e2e/*.spec.ts`).
 - **Deploy documentation** — [deploy-vercel.md](deploy-vercel.md) for a public demo URL.
 
 ## Optional next steps (pick any; no priority order)
