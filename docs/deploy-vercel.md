@@ -88,10 +88,13 @@ Replace the **Live demo** line in `README.md` with your public URL so recruiters
 
 ## 8) OpenAPI / health (optional)
 
-The app exposes **`GET /api/health`** for uptime checks. A minimal OpenAPI description lives in [`docs/openapi.yaml`](openapi.yaml) (see [docs/openapi.md](openapi.md) for when to grow this beyond the stub).
+The app exposes **`GET /api/health`** for uptime checks (no session cookie required — it is allowlisted in `middleware.ts` next to `/api/auth`). A minimal OpenAPI description lives in [`docs/openapi.yaml`](openapi.yaml) (see [docs/openapi.md](openapi.md) for when to grow this beyond the stub).
 
 ## Troubleshooting
 
 - **OAuth redirect mismatch:** double-check `AUTH_URL` and the GitHub callback host match your deployment hostname.
 - **Prisma / SSL:** managed Postgres URLs usually include SSL; if you see TLS errors, confirm the provider’s recommended query params.
 - **Build fails on Prisma:** ensure `postinstall` runs (`prisma generate`) — Vercel runs `npm install` by default.
+- **Resend:** the `RESEND_FROM` address must use a domain you verified in Resend (use `onboarding@resend.dev` only for quick tests). If emails never arrive, check the Vercel function logs for `[email]` lines; invite rows are still created when email fails.
+- **Sentry:** use separate DSN values for Preview vs Production if you want clean issue buckets; missing `NEXT_PUBLIC_SENTRY_DSN` means browser errors are not reported (server may still report with `SENTRY_DSN` only).
+- **Kanban DnD:** moves call the same server action as before; if the UI feels stuck after a failed drag, refresh the page. Keyboard moves use the same collision rules as the mouse (`pointerWithin`).
