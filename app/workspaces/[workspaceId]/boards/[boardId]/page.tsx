@@ -91,6 +91,11 @@ export default async function BoardPage({
                 {list.cards.map((card) => (
                   <div key={card.id} className="rounded-lg border border-slate-800 bg-slate-900/60 p-3">
                     <p className="text-sm font-medium text-slate-100">{card.title}</p>
+                    {card.dueAt ? (
+                      <p className="mt-1 text-xs text-amber-200/90">
+                        Due {new Date(card.dueAt).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}
+                      </p>
+                    ) : null}
                     {card.description ? (
                       <p className="mt-1 text-xs text-slate-400">{card.description}</p>
                     ) : null}

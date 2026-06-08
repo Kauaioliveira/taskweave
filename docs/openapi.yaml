@@ -3,13 +3,14 @@ info:
   title: TaskWeave public API (minimal)
   version: "0.0.0"
   description: >
-    Hand-maintained stub. The app is mostly Server Actions + Auth.js; only
-    explicit HTTP routes intended for operators are listed here.
+    Hand-maintained contract. Most mutations are Next.js Server Actions; these
+    routes are for monitors and same-origin HTTP clients with a session cookie.
 paths:
   /api/health:
     get:
       summary: Liveness probe
       operationId: getHealth
+      security: []
       responses:
         "200":
           description: Service is running
@@ -25,3 +26,82 @@ paths:
                   service:
                     type: string
                     example: taskweave
+  /api/boards/{boardId}:
+    get:
+      summary: Board summary with list metadata
+      security:
+        - sessionCookie: []
+      description: >
+        Returns board name, workspace id, and lists with card counts. Requires
+        a signed-in user who is a member of the board's workspace. Uses the
+        same Auth.js session cookie as the web app (no API key).
+      operationId: getBoardSummary
+      parameters:
+        - name: boardId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Board found and user is a workspace member
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BoardSummary"
+        "401":
+          description: No session
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+        "404":
+          description: Board does not exist or user is not a member of the workspace
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorBody"
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: authjs.session-token
+      description: >
+        Auth.js v5 default cookie name may be prefixed (__Secure- or __Host-)
+        in production; use the browser session from the same origin as the app.
+  schemas:
+    ErrorBody:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: Unauthorized
+    BoardSummary:
+      type: object
+      required: [id, name, workspaceId, lists]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        workspaceId:
+          type: string
+        lists:
+          type: array
+          items:
+            $ref: "#/components/schemas/ListSummary"
+    ListSummary:
+      type: object
+      required: [id, name, order, cardCount]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        order:
+          type: integer
+        cardCount:
+          type: integer
+          minimum: 0

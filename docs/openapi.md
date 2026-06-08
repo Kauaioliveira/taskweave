@@ -10,8 +10,9 @@ TaskWeave is primarily a **Next.js App Router** app with **server actions** and 
 
 ## What this repo ships today
 
-- **`GET /api/health`** — small JSON liveness probe for uptime monitors (`app/api/health/route.ts`).
-- **[`docs/openapi.yaml`](openapi.yaml)** — minimal OpenAPI 3 description of `/api/health` only. Expand this file as you add real public routes.
+- **`GET /api/health`** — small JSON liveness probe for uptime monitors ([`app/api/health/route.ts`](../app/api/health/route.ts)).
+- **`GET /api/boards/{boardId}`** — read-only board summary (lists + `cardCount`) for the signed-in workspace member ([`app/api/boards/[boardId]/route.ts`](../app/api/boards/[boardId]/route.ts)). Same **Auth.js session cookie** as the web UI; not a standalone API key.
+- **[`docs/openapi.yaml`](openapi.yaml)** — OpenAPI 3 description of the routes above. Expand when you add more first-party HTTP surfaces.
 
 Auth.js OAuth callback routes are defined by the library; documenting them in OpenAPI is usually **low value** compared to linking to the official Auth.js docs in the README.
 
