@@ -4,7 +4,7 @@ TaskWeave is a **portfolio-grade full-stack** example: multi-workspace **Kanban 
 
 [![CI](https://github.com/Kauaioliveira/taskweave/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Kauaioliveira/taskweave/actions/workflows/ci.yml?query=branch%3Amain)
 
-**Live demo:** [https://task-weave.vercel.app](https://task-weave.vercel.app) (Vercel + managed Postgres). To run your own instance or change hosting, see **[docs/deploy-vercel.md](docs/deploy-vercel.md)**.
+**Live demo:** _(em processo de novo deploy — link removido temporariamente porque o domínio anterior expirou e foi reaproveitado por outro projeto)._ Para rodar sua própria instância, veja **[docs/deploy-vercel.md](docs/deploy-vercel.md)**.
 
 ## Architecture
 
