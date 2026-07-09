@@ -1,16 +1,15 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
-import type { JWT } from "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
-import GitHub from "next-auth/providers/github";
 import { prisma } from "@/lib/prisma";
+import { authConfig } from "@/auth.config";
 
-const providers: NextAuthConfig["providers"] = [
-  GitHub({
-    allowDangerousEmailAccountLinking: true,
-  }),
-];
+// Full config used by API routes / server actions (Node runtime).
+// Do NOT import this file from middleware.ts — it pulls in Prisma,
+// which is too large for the Edge Function bundle. middleware.ts
+// builds its own lightweight NextAuth instance from `authConfig`.
+const providers: NextAuthConfig["providers"] = [...authConfig.providers];
 
 if (process.env.E2E_TEST === "1") {
   providers.push(
@@ -36,27 +35,7 @@ if (process.env.E2E_TEST === "1") {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  ...authConfig,
   adapter: PrismaAdapter(prisma),
-  // JWT sessions keep `middleware.ts` Edge-safe (no Prisma in the Edge bundle).
-  // The Prisma adapter still persists users/accounts for OAuth on Node routes.
-  session: { strategy: "jwt", maxAge: 30 * 24 * 60 * 60 },
-  trustHost: true,
-  pages: {
-    signIn: "/login",
-  },
   providers,
-  callbacks: {
-    jwt({ token, user }: { token: JWT; user?: { id?: string | null } | null }) {
-      if (user?.id) {
-        token.sub = user.id;
-      }
-      return token;
-    },
-    session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-      }
-      return session;
-    },
-  },
 });

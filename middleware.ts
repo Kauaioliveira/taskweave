@@ -1,5 +1,10 @@
-import { auth } from "@/auth";
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
+import { authConfig } from "@/auth.config";
+
+// Uses the lightweight, Edge-safe config (no Prisma adapter) so this
+// middleware's Edge Function bundle stays well under Vercel's size limit.
+const { auth } = NextAuth(authConfig);
 
 const publicPaths = new Set(["/", "/login"]);
 
