@@ -80,3 +80,44 @@ export async function createBoard(formData: FormData) {
   revalidatePath(`/workspaces/${workspaceId}`);
   redirect(`/workspaces/${workspaceId}/boards/${board.id}`);
 }
+
+export async function deleteBoard(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const boardId = String(formData.get("boardId") ?? "");
+  if (!boardId) return;
+
+  const board = await prisma.board.findUnique({
+    where: { id: boardId },
+    select: { workspaceId: true },
+  });
+  if (!board) throw new Error("Not found");
+
+  await requireMembership(board.workspaceId, session.user.id, minimumRoleForWorkspaceAdmin());
+
+  await prisma.board.delete({ where: { id: boardId } });
+  revalidatePath(`/workspaces/${board.workspaceId}`);
+  redirect(`/workspaces/${board.workspaceId}`);
+}
+
+export async function renameBoard(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const boardId = String(formData.get("boardId") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
+  if (!boardId || !name) return;
+
+  const board = await prisma.board.findUnique({
+    where: { id: boardId },
+    select: { workspaceId: true },
+  });
+  if (!board) throw new Error("Not found");
+
+  await requireMembership(board.workspaceId, session.user.id, minimumRoleForBoardEdit());
+
+  await prisma.board.update({ where: { id: boardId }, data: { name } });
+  revalidatePath(`/workspaces/${board.workspaceId}`);
+  revalidatePath(`/workspaces/${board.workspaceId}/boards/${boardId}`);
+}

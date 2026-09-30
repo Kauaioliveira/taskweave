@@ -8,6 +8,7 @@ import { minimumRoleForInvite } from "@/lib/rbac";
 import { requireMembership } from "@/lib/workspace-access";
 import { sendWorkspaceInviteEmail } from "@/lib/email";
 import { getPublicOrigin } from "@/lib/public-origin";
+import { parseWorkspaceRole } from "@/lib/roles";
 
 export async function createWorkspaceInvite(formData: FormData) {
   const session = await auth();
@@ -15,7 +16,7 @@ export async function createWorkspaceInvite(formData: FormData) {
 
   const workspaceId = String(formData.get("workspaceId") ?? "");
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
-  const role = String(formData.get("role") ?? "MEMBER") as "OWNER" | "MEMBER" | "VIEWER";
+  const role = parseWorkspaceRole(formData.get("role"));
 
   if (!workspaceId || !email) return;
 
@@ -104,4 +105,26 @@ export async function acceptWorkspaceInvite(formData: FormData) {
   revalidatePath("/workspaces");
   revalidatePath(`/workspaces/${invite.workspaceId}`);
   redirect(`/workspaces/${invite.workspaceId}`);
+}
+
+export async function revokeWorkspaceInvite(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const inviteId = String(formData.get("inviteId") ?? "");
+  if (!inviteId) return;
+
+  const invite = await prisma.workspaceInvite.findUnique({
+    where: { id: inviteId },
+    select: { workspaceId: true, usedAt: true },
+  });
+  if (!invite) throw new Error("Not found");
+
+  await requireMembership(invite.workspaceId, session.user.id, minimumRoleForInvite());
+
+  if (!invite.usedAt) {
+    await prisma.workspaceInvite.delete({ where: { id: inviteId } });
+  }
+
+  revalidatePath(`/workspaces/${invite.workspaceId}`);
 }

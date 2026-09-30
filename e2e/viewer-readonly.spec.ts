@@ -12,7 +12,7 @@ test.describe("Viewer read-only (RBAC)", () => {
 
     await page.getByRole("link", { name: "RBAC Demo Workspace" }).click();
     await expect(page.getByRole("heading", { name: "RBAC Demo Workspace" })).toBeVisible({ timeout: 60_000 });
-    await expect(page.getByText("Your role: VIEWER")).toBeVisible();
+    await expect(page.getByText("Your role: Viewer")).toBeVisible();
     await expect(page.getByText("You have read-only access in this workspace.")).toBeVisible();
     await expect(page.getByRole("button", { name: "Create board" })).toHaveCount(0);
     await expect(page.getByRole("heading", { name: "Invite member" })).toHaveCount(0);

@@ -15,6 +15,9 @@ These items were suggested in the original portfolio plan. The core demo is **RB
 - **Public API / OpenAPI** — `GET /api/health`, **`GET /api/boards/{boardId}`** (session cookie, workspace member), [`docs/openapi.yaml`](openapi.yaml) schemas + `sessionCookie` security scheme; [docs/openapi.md](openapi.md). E2E: unauthenticated board request → `401`.
 - **Baseline security headers** — `X-Frame-Options`, `Referrer-Policy`, and `X-Content-Type-Options` via [next.config.ts](../next.config.ts).
 
+- **UX pass** — shared app header, landing page, role badges, members list, copy/revoke invite links, confirmations on destructive actions, pending states on submit buttons, optimistic drag-and-drop, due-date badges (overdue / due soon), rename/delete lists, rename/delete boards, loading and error pages. E2E: `e2e/board-flow.spec.ts`.
+- **API auth** — middleware lets `/api/*` through so route handlers answer `401` JSON instead of redirecting to `/login`.
+
 ## Optional next steps (pick any; no priority order)
 
 - Further HTTP routes (webhooks, API keys) if the product grows beyond the demo.
