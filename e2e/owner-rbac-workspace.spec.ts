@@ -12,7 +12,7 @@ test.describe("Owner on seeded RBAC workspace", () => {
 
     await page.getByRole("link", { name: "RBAC Demo Workspace" }).click();
     await expect(page.getByRole("heading", { name: "RBAC Demo Workspace" })).toBeVisible({ timeout: 60_000 });
-    await expect(page.getByText("Your role: OWNER")).toBeVisible();
+    await expect(page.getByText("Your role: Owner")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Invite member" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Create board" })).toBeVisible();
   });

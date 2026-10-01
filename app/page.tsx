@@ -1,56 +1,101 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { signInWithGithub } from "@/app/actions/auth";
+import { GitHubIcon } from "@/components/GitHubIcon";
+import { Logo } from "@/components/Logo";
+import { ui } from "@/components/ui";
+
+const REPO_URL = "https://github.com/Kauaioliveira/taskweave";
+
+const features = [
+  {
+    title: "Workspaces for every team",
+    body: "Keep projects apart. Each workspace has its own boards, members, and invites.",
+  },
+  {
+    title: "Kanban that stays out of the way",
+    body: "Drag cards between columns with the mouse or the keyboard, reorder within a list, and set due dates.",
+  },
+  {
+    title: "Roles that are enforced on the server",
+    body: "Owners manage the workspace, Members edit boards, Viewers read. Every mutation checks the role.",
+  },
+  {
+    title: "Invites scoped to an email",
+    body: "Share a link that only the invited email can accept. Links expire after 7 days and can be revoked.",
+  },
+];
 
 export default async function HomePage() {
   const session = await auth();
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-10 px-6 py-16">
-      <header className="space-y-4">
-        <p className="text-sm font-medium text-sky-300">Portfolio / learning project</p>
-        <h1 className="text-4xl font-semibold tracking-tight text-white">TaskWeave</h1>
-        <p className="max-w-2xl text-lg text-slate-300">
-          Multi-workspace Kanban boards with role-based access control (Owner / Member / Viewer) and
-          invite links. Built with Next.js, Auth.js, Prisma, and PostgreSQL.
-        </p>
-      </header>
-
-      <div className="flex flex-wrap gap-3">
+    <div className="min-h-screen">
+      <header className="mx-auto flex max-w-5xl items-center justify-between px-6 py-6">
+        <Logo />
         {session ? (
-          <Link
-            href="/workspaces"
-            className="rounded-lg bg-sky-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-sky-400"
-          >
-            Go to workspaces
+          <Link href="/workspaces" className="text-sm text-slate-300 hover:text-white">
+            Your workspaces →
           </Link>
         ) : (
-          <form action={signInWithGithub}>
-            <button
-              type="submit"
-              className="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-900 hover:bg-white"
-            >
-              Continue with GitHub
-            </button>
-          </form>
+          <Link href="/login" className="text-sm text-slate-300 hover:text-white">
+            Sign in
+          </Link>
         )}
-        <Link
-          href="https://github.com/your-username/taskweave"
-          className="rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-slate-500"
-        >
-          View on GitHub
-        </Link>
-      </div>
+      </header>
 
-      <section className="grid gap-4 rounded-xl border border-slate-800 bg-slate-950/40 p-6 text-slate-200">
-        <h2 className="text-lg font-semibold text-white">What recruiters can verify here</h2>
-        <ul className="list-disc space-y-2 pl-5 text-slate-300">
-          <li>App Router structure, server actions, and typed data access with Prisma</li>
-          <li>OAuth (GitHub) with JWT sessions via Auth.js (Edge-safe middleware)</li>
-          <li>Multi-tenant workspaces with memberships and RBAC checks in mutations</li>
-          <li>Docker Compose for local PostgreSQL and CI-friendly workflows</li>
-        </ul>
-      </section>
-    </main>
+      <main id="main" className="mx-auto flex max-w-5xl flex-col gap-16 px-6 pb-20 pt-10">
+        <section className="max-w-3xl space-y-6">
+          <p className="inline-flex rounded-full border border-sky-900/70 bg-sky-950/40 px-3 py-1 text-xs font-medium text-sky-200">
+            Open source · Next.js · Auth.js · Prisma · PostgreSQL
+          </p>
+          <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+            Organize team work in Kanban boards, with the right access for each person.
+          </h1>
+          <p className="max-w-2xl text-lg text-slate-300">
+            TaskWeave gives every team a workspace with boards, role-based access (Owner, Member, Viewer), and
+            email-scoped invite links.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            {session ? (
+              <Link href="/workspaces" className={ui.btnPrimary}>
+                Go to workspaces
+              </Link>
+            ) : (
+              <form action={signInWithGithub}>
+                <button type="submit" className={ui.btnLight}>
+                  <GitHubIcon />
+                  Continue with GitHub
+                </button>
+              </form>
+            )}
+            <a href={REPO_URL} target="_blank" rel="noreferrer" className={ui.btnGhost}>
+              View on GitHub
+            </a>
+          </div>
+        </section>
+
+        <section aria-labelledby="features" className="space-y-6">
+          <h2 id="features" className={ui.sectionTitle}>
+            What you get
+          </h2>
+          <ul className="grid gap-4 sm:grid-cols-2">
+            {features.map((f) => (
+              <li key={f.title} className="rounded-xl border border-slate-800 bg-slate-950/40 p-5">
+                <h3 className="font-semibold text-white">{f.title}</h3>
+                <p className="mt-2 text-sm text-slate-400">{f.body}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
+
+      <footer className="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+        TaskWeave is a portfolio project, MIT licensed.{" "}
+        <a href={REPO_URL} className="text-slate-300 hover:underline">
+          Source on GitHub
+        </a>
+      </footer>
+    </div>
   );
 }

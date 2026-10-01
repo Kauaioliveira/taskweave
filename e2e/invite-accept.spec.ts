@@ -20,6 +20,6 @@ test.describe("Invite accept (happy path)", () => {
 
     await expect(page).toHaveURL(/\/workspaces\/[^/]+$/, { timeout: 60_000 });
     await expect(page.getByRole("heading", { name: "RBAC Demo Workspace" })).toBeVisible({ timeout: 60_000 });
-    await expect(page.getByText("Your role: MEMBER")).toBeVisible();
+    await expect(page.getByText("Your role: Member")).toBeVisible();
   });
 });

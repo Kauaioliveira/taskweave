@@ -11,7 +11,8 @@ const publicPaths = new Set(["/", "/login"]);
 export default auth((req) => {
   const { pathname } = req.nextUrl;
 
-  if (pathname.startsWith("/api/auth") || pathname === "/api/health") {
+  // API routes check the session themselves and answer 401 JSON; a redirect to /login would hide that.
+  if (pathname.startsWith("/api/")) {
     return NextResponse.next();
   }
 

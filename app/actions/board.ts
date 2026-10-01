@@ -41,6 +41,63 @@ export async function createList(formData: FormData) {
   revalidatePath(`/workspaces/${board.workspaceId}/boards/${boardId}`);
 }
 
+export async function renameList(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const listId = String(formData.get("listId") ?? "");
+  const name = String(formData.get("name") ?? "").trim();
+  if (!listId || !name) return;
+
+  const list = await prisma.list.findUnique({
+    where: { id: listId },
+    include: { board: true },
+  });
+  if (!list) throw new Error("Not found");
+
+  await requireBoardAccess(list.boardId, session.user.id);
+
+  await prisma.list.update({ where: { id: listId }, data: { name } });
+
+  revalidatePath(`/workspaces/${list.board.workspaceId}/boards/${list.boardId}`);
+}
+
+/** Deletes a list with its cards and renormalizes the remaining lists' order. */
+export async function deleteList(formData: FormData) {
+  const session = await auth();
+  if (!session?.user?.id) throw new Error("Unauthorized");
+
+  const listId = String(formData.get("listId") ?? "");
+  if (!listId) return;
+
+  const list = await prisma.list.findUnique({
+    where: { id: listId },
+    include: { board: true },
+  });
+  if (!list) throw new Error("Not found");
+
+  await requireBoardAccess(list.boardId, session.user.id);
+
+  await prisma.$transaction(async (tx) => {
+    await tx.list.delete({ where: { id: listId } });
+
+    const remaining = await tx.list.findMany({
+      where: { boardId: list.boardId },
+      orderBy: { order: "asc" },
+      select: { id: true },
+    });
+
+    for (let order = 0; order < remaining.length; order++) {
+      await tx.list.update({
+        where: { id: remaining[order]!.id },
+        data: { order },
+      });
+    }
+  });
+
+  revalidatePath(`/workspaces/${list.board.workspaceId}/boards/${list.boardId}`);
+}
+
 export async function createCard(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) throw new Error("Unauthorized");
